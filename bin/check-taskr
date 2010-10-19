@@ -11,18 +11,9 @@ require 'sinatra'
 require 'fastthread'
 require "check-taskr"
 require 'cli'
-
+require 'app'
 require 'json'
 
 Cli.execute
 
-get '/' do
-  <<DONE
-OK.
-DONE
-end
-
-get '/stats' do
-  config = Jobs::JobsConfiguration.instance
-  config.results.to_json
-end
+App.run!
