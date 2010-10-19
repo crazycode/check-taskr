@@ -9,7 +9,7 @@ require 'rubygems'
 require 'sinatra'
 
 require 'fastthread'
-require "check-runner"
+require "check-taskr"
 require 'cli'
 
 require 'json'

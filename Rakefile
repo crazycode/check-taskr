@@ -5,12 +5,12 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "check-runner"
-    gem.executables     = %W(check-runner)
-    gem.summary = %Q{check runner}
-    gem.description = %Q{check runner for sdo}
+    gem.name = "check-taskr"
+    gem.executables     = %W(check-taskr)
+    gem.summary = %Q{check taskr}
+    gem.description = %Q{check taskr for sdo}
     gem.email = "crazycode@gmail.com"
-    gem.homepage = "http://github.com/crazycode/check-runner"
+    gem.homepage = "http://github.com/crazycode/check-taskr"
     gem.authors = ["crazycode"]
 
     gem.add_dependency "sinatra"
@@ -52,7 +52,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "check-runner #{version}"
+  rdoc.title = "check-taskr #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
