@@ -18,13 +18,14 @@ module Jobs
 
     include Singleton
 
-    attr_accessor :sleep_time, :results
+    attr_accessor :sleep_time, :results, :listen_port
     attr_reader :load_paths, :actions
 
     def initialize
       @actions = []
       @sleep_time = 5
       @results = Hash.new
+      @listen_port = 4567
     end
 
     def add_item(item)
@@ -36,7 +37,8 @@ module Jobs
 
     def self.init(options = {})
       _instance = self.instance
-      _instance.sleep_time = options[:sleep_time].nil? ? 8 : options[:sleep_time]
+      _instance.sleep_time = options[:sleep_time] || 8
+      _instance.listen_port = options[:port] || 4567
       if block_given?
         yield _instance
       end

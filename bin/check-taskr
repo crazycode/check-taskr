@@ -15,5 +15,6 @@ require 'app'
 require 'json'
 
 Cli.execute
+config = Jobs::JobsConfiguration.instance
 
-App.run!
+App.run! :port => config.listen_port

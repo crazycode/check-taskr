@@ -1,4 +1,4 @@
-JobsConfiguration.init do |j|
+JobsConfiguration.init(:port => 4899) do |j|
   j.setup_tcp_port :error_code => 10231
 
   j.check_tcp_port "HudsonServer", "10.241.12.38", 8099
