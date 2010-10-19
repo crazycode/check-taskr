@@ -7,10 +7,10 @@ module Jobs
     attr_accessor :name
 
     @@default_error_code = nil
-
+    @@default_error_msg = nil
     def self.setup(options={})
-      puts "hhh=#{options}"
-      @@default_error_code = options[:error_code]
+      @@default_error_code = options[:default_error_code]
+      @@default_error_msg = options[:default_error_msg]
     end
   end
 
@@ -34,9 +34,9 @@ module Jobs
       @items.add(item)
     end
 
-    def self.init(sleep_time = 8)
+    def self.init(options = {})
       _instance = self.instance
-      _instance.sleep_time = sleep_time
+      _instance.sleep_time = options[:sleep_time].nil? ? 8 : options[:sleep_time]
       if block_given?
         yield _instance
       end

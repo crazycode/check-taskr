@@ -15,6 +15,7 @@ begin
 
     gem.add_dependency "sinatra"
     gem.add_dependency "fastthread"
+    gem.add_dependency "json"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new

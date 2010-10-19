@@ -17,7 +17,9 @@ require 'json'
 Cli.execute
 
 get '/' do
-  "Hello, world!"
+  <<DONE
+OK.
+DONE
 end
 
 get '/stats' do
