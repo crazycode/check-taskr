@@ -9,12 +9,11 @@ require 'rubygems'
 require 'sinatra'
 
 require 'fastthread'
-require "check-taskr"
-require 'cli'
-require 'app'
 require 'json'
 
-Cli.execute
-config = Jobs::JobsConfiguration.instance
+require "check-taskr"
 
-App.run! :port => config.listen_port
+CheckTaskr::Cli.execute
+config = CheckTaskr::JobsConfiguration.instance
+
+CheckTaskr::App.run! :port => config.listen_port

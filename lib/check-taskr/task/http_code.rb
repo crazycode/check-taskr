@@ -1,6 +1,6 @@
 require 'net/http'
 
-module Jobs
+module CheckTaskr
 
   class JobsConfiguration
 

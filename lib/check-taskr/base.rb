@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'singleton'
 
-module Jobs
+module CheckTaskr
 
   class JobsAction
     attr_accessor :name

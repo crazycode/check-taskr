@@ -1,6 +1,6 @@
 require 'socket'
 
-module Jobs
+module CheckTaskr
 
   class JobsConfiguration
 
