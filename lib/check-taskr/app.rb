@@ -5,9 +5,7 @@ module CheckTaskr
 
   class App < Sinatra::Base
     get '/' do
-      <<DONE
-OK.
-DONE
+      "OK."
     end
 
     get '/stats' do

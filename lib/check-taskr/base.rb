@@ -49,7 +49,16 @@ module CheckTaskr
       @actions.each do |action|
         hash = action.execute
         unless hash.nil?
-          results[action.name] = hash
+          if hash["ip"].nil? && hash[:ip].nil?
+            hash.each do |k, v|
+              unless (v["ip"].nil? && v[:ip].nil?)
+                results["#{action.name}_#{k}"] = v
+              end
+            end
+          else
+            results[action.name] = hash
+          end
+
         end
       end
       @results.clear
