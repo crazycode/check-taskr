@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require "fastthread"
 require "check-taskr/base"
 
