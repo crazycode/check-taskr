@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'socket'
+require 'timeout'
 
 module CheckTaskr
 
@@ -36,12 +37,17 @@ module CheckTaskr
     def execute
       puts "action: ip=#{@ip}, port=#{@port}, name=#{@name}"
       begin
-        socket = Socket.new(AF_INET, SOCK_STREAM, 0) #生成新的套接字
-        sockaddr = Socket.pack_sockaddr_in(@port, @ip)
-        socket.connect(sockaddr)
-        # puts "Port:#{@ip}:#{@port} is Opend!\n"
-        socket.close
-        hash = { :stat => 0, :ip => @ip, :msg => "OK", :timestamp => Time.now.to_i }
+        timeout(5) do
+          socket = Socket.new(AF_INET, SOCK_STREAM, 0) #生成新的套接字
+          sockaddr = Socket.pack_sockaddr_in(@port, @ip)
+          socket.connect(sockaddr)
+          # puts "Port:#{@ip}:#{@port} is Opend!\n"
+          socket.close
+          hash = { :stat => 0, :ip => @ip, :msg => "OK", :timestamp => Time.now.to_i }
+          return hash
+        end
+      rescue Timeout::Error
+        hash = {:error_id => @error_code, :stat => 2, :ip => @ip, :msg => "网络访问超时", :timestamp => Time.now.to_i }
         return hash
       rescue Exception => e
         # puts "connet fail:#{e}"

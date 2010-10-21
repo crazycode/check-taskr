@@ -37,6 +37,7 @@ module CheckTaskr
       hash = {:stat => 0, :ip => @ip, :msg => "OK" }
       begin
         Net::HTTP.start(@ip, @port) do |http|
+          http.read_timeout = 5
           if @method == :get
             response = http.get(@path)
           end
@@ -50,9 +51,12 @@ module CheckTaskr
           puts "body=#{body}"
           hash = JSON.load(body)
           # hash[:timestamp] = Time.now.to_i
+          if hash["stat"] && hash["stat"].to_i > 0
+            hash[:error_id] = @error_code
+          end
         end
       rescue Exception => e
-        hash[:error_code] = @error_msg
+        hash[:error_id] = @error_code
         hash[:stat] = 2
         hash[:msg] = "HTTP #{@method.to_s} #{@path}出现异常：#{e}"
       end
