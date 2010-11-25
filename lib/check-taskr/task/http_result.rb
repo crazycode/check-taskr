@@ -34,7 +34,7 @@ module CheckTaskr
 
     def execute
       puts "http action: ip=#{@ip}, port=#{@port}, name=#{@name}"
-      hash = {:stat => 0, :ip => @ip, :msg => "OK" }
+      hash = {:stat => 0, :ip => @ip, :msg => "OK", :error_id => @error_code }
       begin
         Net::HTTP.start(@ip, @port) do |http|
           http.read_timeout = 5
@@ -50,19 +50,17 @@ module CheckTaskr
           result = response.body
           hash[:timestamp] = Time.now.to_i
           unless @expect_result.eql?(result)
-            hash[:error_id] = @error_code
             hash[:stat] = 1
             hash[:msg] = "HTTP #{@method.to_s} #{@path}期望返回\"#{@expect_result}\",但返回\"#{result}\""
           end
         end
       rescue Exception => e
-        hash[:error_id] = @error_code
         hash[:stat] = 2
+        hash[:timestamp] = Time.now.to_i
         hash[:msg] = "HTTP #{@method.to_s} #{@path}出现异常：#{e}"
       end
       hash
     end
   end
-
 
 end

@@ -18,7 +18,7 @@ module CheckTaskr
 
     include Singleton
 
-    attr_accessor :sleep_time, :results, :listen_port
+    attr_accessor :sleep_time, :results, :listen_port, :locked
     attr_reader :load_paths, :actions
 
     def initialize
@@ -26,6 +26,7 @@ module CheckTaskr
       @sleep_time = 5
       @results = Hash.new
       @listen_port = 4567
+      @locked = false
     end
 
     def add_item(item)
@@ -33,6 +34,14 @@ module CheckTaskr
         @items = Array.new
       end
       @items.add(item)
+    end
+
+    def lock
+      @locked = true
+    end
+
+    def unlock
+      @locked = false
     end
 
     def self.init(options = {})
@@ -45,6 +54,8 @@ module CheckTaskr
     end
 
     def execute_all
+      return if @locked
+
       results = Hash.new
       @actions.each do |action|
         hash = action.execute

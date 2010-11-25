@@ -43,7 +43,7 @@ module CheckTaskr
           socket.connect(sockaddr)
           # puts "Port:#{@ip}:#{@port} is Opend!\n"
           socket.close
-          hash = { :stat => 0, :ip => @ip, :msg => "OK", :timestamp => Time.now.to_i }
+          hash = { :stat => 0, :ip => @ip, :msg => "OK", :timestamp => Time.now.to_i, :error_id => @error_code }
           return hash
         end
       rescue Timeout::Error
