@@ -63,7 +63,7 @@ module CheckTaskr
           %td{:align=>"center"}= hash[:ip] || hash["ip"] || "&nbsp;"
           %td{:align=>"center"}= hash[:stat] || hash["stat"] || "&nbsp;"
           %td{:align=>"center"}= hash[:error_id] || hash["error_id"] || "&nbsp;"
-          %td{:align=>"center"}= hash[:timestamp] || hash["timestamps"] || "&nbsp;"
+          %td{:align=>"center"}= hash[:timestamp] || hash["timestamp"] || "&nbsp;"
           %td= hash[:msg] || hash["msg"] || "&nbsp;"
 HAML
     end
