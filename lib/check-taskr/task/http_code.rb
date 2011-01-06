@@ -9,9 +9,11 @@ module CheckTaskr
       HttpReturnCodeAction.setup(options)
     end
 
-    def check_http_returncode(name, ip, options = {})
-      action = HttpReturnCodeAction.new({:name => name, :ip => ip}.merge(options))
-      @actions << action
+    def http_returncode(name, options = {})
+      process_hosts(options) do |host|
+        action = HttpReturnCodeAction.new({:name => name, :ip => host}.merge(options))
+        @actions << action
+      end
     end
   end
 
@@ -33,7 +35,8 @@ module CheckTaskr
     end
 
     def execute
-      puts "http action: ip=#{@ip}, port=#{@port}, name=#{@name}"
+      log = Logger['default']
+      log.debug "http action: ip=#{@ip}, port=#{@port}, name=#{@name}"
       hash = {:stat => 0, :ip => @ip, :msg => "OK", :error_id => @error_code }
       begin
         Net::HTTP.start(@ip, @port) do |http|
@@ -52,16 +55,17 @@ module CheckTaskr
           unless @expect_code.eql?(code)
             hash[:stat] = 1
             hash[:msg] = "HTTP #{@method.to_s} #{@path}期望返回#{@expect_code},但返回#{code}"
+            log.warn hash.to_json
           end
         end
       rescue Exception => e
         hash[:stat] = 2
         hash[:timestamp] = Time.now.to_i
         hash[:msg] = "HTTP #{@method.to_s} #{@path}出现异常：#{e}"
+        log.error hash.to_json
       end
       hash
     end
   end
-
 
 end

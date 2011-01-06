@@ -10,9 +10,11 @@ module CheckTaskr
       HttpJsonAction.setup(options)
     end
 
-    def check_http_json(name, ip, options = {})
-      action = HttpJsonAction.new({:name => name, :ip => ip}.merge(options))
-      @actions << action
+    def http_json(name, options = {})
+      process_hosts(options) do |host|
+        action = HttpJsonAction.new({:name => name, :ip => host}.merge(options))
+        @actions << actions
+      end
     end
   end
 
@@ -33,6 +35,7 @@ module CheckTaskr
     end
 
     def execute
+      log = Logger['default']
       hash = {:stat => 0, :ip => @ip, :msg => "OK", :error_id => @error_code }
       begin
         Net::HTTP.start(@ip, @port) do |http|
@@ -61,6 +64,7 @@ module CheckTaskr
         hash[:stat] = 2
         hash[:timestamp] = Time.now.to_i
         hash[:msg] = "HTTP #{@method.to_s} #{@path}出现异常：#{e}"
+        log.error hash.to_json
       end
       hash
     end

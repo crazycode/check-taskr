@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+# for development
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
@@ -8,8 +9,18 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
 require 'sinatra'
 
-require 'fastthread'
-require 'json'
+#require 'fastthread'
+#require 'json'
+require 'log4r'
+
+require "log4r/outputter/datefileoutputter"
+
+include Log4r
+
+# create a logger named 'mylog' that logs to stdout
+log = Logger.new 'default'
+log.outputters =  Log4r::DateFileOutputter.new('check_log', :dirname => "./logs")
+log.level = DEBUG
 
 require "check-taskr"
 

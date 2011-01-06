@@ -10,14 +10,16 @@ module CheckTaskr
       SocketAction.setup(options)
     end
 
-    def check_tcp_port(name, ip, port, options = {})
-      action = SocketAction.new(:name => name, :ip => ip, :port => port)
+    def tcp_port(name, options = {})
+      process_hosts(options) do |host|
+        action = SocketAction.new(:name => name, :ip => host, :port => options.fetch(:port))
+        action.error_code ||= options[:error_code]
+        action.error_msg ||= options[:error_msg]
 
-      action.error_code ||= options[:error_code]
-      action.error_msg ||= options[:error_msg]
+        # new 一个action，加到Configuration.configs数组中.
+        @actions << action
+      end
 
-      # new 一个action，加到Configuration.configs数组中.
-      @actions << action
     end
   end
 
@@ -35,7 +37,8 @@ module CheckTaskr
     end
 
     def execute
-      puts "action: ip=#{@ip}, port=#{@port}, name=#{@name}"
+      log = Logger['default']
+      log.debug "action: ip=#{@ip}, port=#{@port}, name=#{@name}"
       begin
         timeout(5) do
           socket = Socket.new(AF_INET, SOCK_STREAM, 0) #生成新的套接字
@@ -44,16 +47,16 @@ module CheckTaskr
           # puts "Port:#{@ip}:#{@port} is Opend!\n"
           socket.close
           hash = { :stat => 0, :ip => @ip, :msg => "OK", :timestamp => Time.now.to_i, :error_id => @error_code }
-          return hash
         end
       rescue Timeout::Error
         hash = {:error_id => @error_code, :stat => 2, :ip => @ip, :msg => "网络访问超时", :timestamp => Time.now.to_i }
-        return hash
+        log.error hash.to_json
       rescue Exception => e
         # puts "connet fail:#{e}"
         hash = {:error_id => @error_code, :stat => 1, :ip => @ip, :msg => @error_msg || e.to_s, :timestamp => Time.now.to_i }
-        return hash
+        log.error hash.to_json
       end
+      return hash
     end
   end
 

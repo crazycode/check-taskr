@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-JobsConfiguration.init(:port => 4899) do |j|
-  j.setup_tcp_port :error_code => 10231
+JobsConfiguration.init(:port => 4899) do |check|
+  check.log_level DEBUG
 
-  j.check_tcp_port "HudsonServer", "10.241.12.38", 8099
+  check.setup_tcp_port :error_code => 10231
 
-  j.check_tcp_port "NotExistsDB", "10.251.251.38", 18299, { :error_msg => "这一服务没有打开" }
+  check.tcp_port "HudsonServer", :hosts => "10.241.12.38", :port => 8099
 
-  #j.check_tcp_port "MysqlDB", "10.241.12.38", 3306
+  check.tcp_port "NotExistsDB", :hosts => "10.251.251.38", :port => 18299, :error_msg => "这一服务没有打开"
 
-  #j.check_tcp_port "NotOpenHOST", "10.241.12.38", 7130
+  check.http_returncode "HudsonWeb", :hosts => ["10.241.12.38", "10.241.12.40"], :port => 8099, :error_code => 909915
+  #check.check_http_returncode "HudsonWeb2", "10.241.12.38", { :port => 80109, :error_code => 909915}
 
-  # j.check_ping "10.20.129.3", { :error_code => 100343 }
+  #check.check_http_result "EsbCheck", "localhost", { :port => 4899, :path => "/", :expect_result => "OK" }
 
-  j.check_http_returncode "HudsonWeb", "10.241.12.38", { :port => 8099, :error_code => 909915}
-  #j.check_http_returncode "HudsonWeb2", "10.241.12.38", { :port => 80109, :error_code => 909915}
-
-  #j.check_http_result "EsbCheck", "localhost", { :port => 4899, :path => "/", :expect_result => "OK" }
-  j.check_http_json "Sujie", "10.241.38.75", :port => 8080, :path => "/admin/msg_admin_check_status", :error_code => 324234
+  check.http_json "Sujie", :hosts => ["10.241.38.75", "10.241.38.22", "10.241.12.38", "10.241.14.35"],
+                 :port => 8080, :path => "/admin/msg_admin_check_status", :error_code => 324234
 
 end
