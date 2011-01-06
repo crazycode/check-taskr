@@ -12,8 +12,8 @@ module CheckTaskr
 
     def http_json(name, options = {})
       process_hosts(options) do |host|
-        action = HttpJsonAction.new({:name => name, :ip => host}.merge(options))
-        @actions << actions
+        action = HttpJsonAction.new({:name => "#{name}-#{host}", :ip => host}.merge(options))
+        @actions << action
       end
     end
   end
@@ -50,7 +50,7 @@ module CheckTaskr
             response = http.post(@path, @post_data)
           end
           body = response.body
-          puts "body=#{body}"
+          log.debug "body=#{body}"
           hash = JSON.load(body)
           # hash[:timestamp] = Time.now.to_i
           #if hash["stat"] && hash["stat"].to_i > 0
@@ -72,3 +72,4 @@ module CheckTaskr
 
 
 end
+

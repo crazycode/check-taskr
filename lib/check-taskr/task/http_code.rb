@@ -11,7 +11,7 @@ module CheckTaskr
 
     def http_returncode(name, options = {})
       process_hosts(options) do |host|
-        action = HttpReturnCodeAction.new({:name => name, :ip => host}.merge(options))
+        action = HttpReturnCodeAction.new({:name => "#{name}-#{host}", :ip => host}.merge(options))
         @actions << action
       end
     end

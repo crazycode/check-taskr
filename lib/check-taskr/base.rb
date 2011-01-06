@@ -23,7 +23,7 @@ module CheckTaskr
 
     def initialize
       @actions = []
-      @sleep_time = 5
+      @sleep_time = 8
       @results = Hash.new
       @listen_port = 4567
       @locked = false
@@ -59,7 +59,26 @@ module CheckTaskr
 
       results = Hash.new
       had_error = false
-      @actions.each do |action|
+
+      fail_actions = run_actions(@actions, results)
+      # 如果有失败，过0.1秒后重试失败的
+      if fail_actions.size > 0
+        sleep(0.1)
+        fail_actions2 = run_actions(fail_actions, results)
+        if fail_actions2.size > 0
+          # 还失败的话，过1秒后重新试一次
+          sleep(1)
+          run_actions(fail_actions2, results)
+        end
+      end
+      @results.clear
+      @results = results
+    end
+
+    def run_actions(actions, results)
+      fail_actions = []
+      log = Logger['default']
+      actions.each do |action|
         hash = action.execute
         unless hash.nil?
           if hash["ip"].nil? && hash[:ip].nil?
@@ -71,16 +90,14 @@ module CheckTaskr
           else
             results[action.name] = hash
           end
-
           state_code = hash[:stat] || hash['stat']
           if !"0".eql?(state_code) && !0.eql?(state_code)
             log.error "#{Time.now}:#{hash.to_json}"
+            fail_actions << action
           end
         end
       end
-      @results.clear
-      @results = results
-      log.debug "#{Time.now} result: ================================\n#{results.to_json}"
+      fail_actions
     end
 
     def load_from_file(file, name=nil)
@@ -98,6 +115,7 @@ module CheckTaskr
 
     # process hosts from options
     def process_hosts(options)
+      log = Logger['default']
       hosts = options.delete(:hosts)
       if block_given?
         if hosts.nil?

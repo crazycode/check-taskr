@@ -11,7 +11,7 @@ module CheckTaskr
 
     def check_http_result(name, options = {})
       process_hosts(options) do |host|
-        action = HttpResultAction.new({:name => name, :ip => host}.merge(options))
+        action = HttpResultAction.new({:name => "#{name}-#{host}", :ip => host}.merge(options))
         @actions << action
       end
     end
