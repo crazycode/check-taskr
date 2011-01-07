@@ -5,24 +5,22 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-
 require 'rubygems'
 require 'sinatra'
 
 require 'log4r'
-
 require "log4r/outputter/datefileoutputter"
-
 include Log4r
-
-# create a logger named 'mylog' that logs to stdout
-log = Logger.new 'default'
-log.outputters =  Log4r::DateFileOutputter.new('check_log', :dirname => "./logs")
-log.level = WARN
-
 require "check-taskr"
 
-CheckTaskr::Cli.execute
+filename = "jobs"
+logdir = "./logs"
+if ARGV.size > 0
+  filename = ARGV[0]
+  logdir = File.dirname(File.realdirpath(filename)) + "/logs"
+end
+
+CheckTaskr::Cli.execute(filename, :logdir => logdir)
 config = CheckTaskr::JobsConfiguration.instance
 
 CheckTaskr::App.run! :port => config.listen_port
