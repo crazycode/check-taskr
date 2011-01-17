@@ -29,7 +29,7 @@ module CheckTaskr
       @path = options[:path] || "/"
       @method = options[:method] || :get
       @post_data = options[:post_data]
-      @expect_result = options[:expect_result] || "200"  #默认期望返回200
+      @expect_result = options[:expect_result] || "ok"  #默认期望返回200
       @error_code = options[:error_code] || @@default_error_code
       @error_msg = options[:error_msg] || @@default_error_msg
     end
@@ -52,9 +52,9 @@ module CheckTaskr
           end
           result = response.body
           hash[:timestamp] = Time.now.to_i
-          unless @expect_result.eql?(result)
+          unless result.include?(@expect_result)
             hash[:stat] = 1
-            hash[:msg] = "HTTP #{@method.to_s} #{@path}期望返回\"#{@expect_result}\",但返回\"#{result}\""
+            hash[:msg] = "HTTP #{@method.to_s} #{@path}期望返回值包含\"#{@expect_result}\",但返回\"#{result}\""
             log.warn hash.to_json
           end
         end
