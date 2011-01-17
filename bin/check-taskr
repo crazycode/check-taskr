@@ -10,7 +10,7 @@ require 'sinatra'
 
 require 'log4r'
 require "log4r/outputter/datefileoutputter"
-include Log4r
+
 require "check-taskr"
 
 filename = "jobs"
@@ -19,6 +19,12 @@ if ARGV.size > 0
   filename = ARGV[0]
   logdir = File.dirname(File.realdirpath(filename)) + "/logs"
 end
+
+log = Log4r::Logger.new('default')
+log.outputters = Log4r::DateFileOutputter.new('check_log', :dirname => logdir)
+log.level = Log4r::DEBUG
+
+log.debug("load #{filename} file, log on #{logdir} ...")
 
 CheckTaskr::Cli.execute(filename, :logdir => logdir)
 config = CheckTaskr::JobsConfiguration.instance

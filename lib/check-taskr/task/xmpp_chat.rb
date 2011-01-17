@@ -44,7 +44,7 @@ module CheckTaskr
       if !@client1.nil? && @client1.is_connected?
         @client1.close
       end
-      @client1 = Jabber::Client.new(@jid1, false)
+      @client1 = Jabber::Client.new(@jid1)
       @client1.connect(@ip, @port)
       @client1.auth(@password1)
       @client1.send(Jabber::Presence.new.set_show(:chat).set_status('check-taskr!'))
@@ -55,7 +55,7 @@ module CheckTaskr
       if !@client2.nil? && @client2.is_connected?
         @client2.close
       end
-      @client2 = Jabber::Client.new(@jid2, false)
+      @client2 = Jabber::Client.new(@jid2)
       @client2.add_message_callback do |m|
       if m.type != :error
         @message_body = m.body
@@ -67,8 +67,8 @@ module CheckTaskr
     end
 
     def execute
-      log = Logger['default']
-      # log.debug "http action: ip=#{@ip}, port=#{@port}, name=#{@name}"
+      log = Log4r::Logger['default']
+      log.debug "xmpp action: ip=#{@ip}, port=#{@port}, name=#{@name}"
       hash = {:stat => 0, :ip => @ip, :msg => "OK", :error_id => @error_code }
       begin
         unless @client1.is_connected?
@@ -85,6 +85,7 @@ module CheckTaskr
 
         sleep(0.2)
 
+        hash[:timestamp] = Time.now.to_i
         unless body.eql?(@message_body)
           hash[:stat] = 3
           hash[:msg] = "在0.2秒内没有收到回应"

@@ -17,6 +17,7 @@ module CheckTaskr
   class JobsConfiguration
 
     include Singleton
+    include Log4r
 
     attr_accessor :sleep_time, :results, :listen_port, :locked
     attr_reader :load_paths, :actions
@@ -54,13 +55,13 @@ module CheckTaskr
     end
 
     def execute_all
+      log = Log4r::Logger['default']
       return if @locked
-      log = Logger['default']
-
       results = Hash.new
       had_error = false
 
       fail_actions = run_actions(@actions, results)
+
       # 如果有失败，过0.1秒后重试失败的
       if fail_actions.size > 0
         sleep(0.1)
@@ -77,7 +78,7 @@ module CheckTaskr
 
     def run_actions(actions, results)
       fail_actions = []
-      log = Logger['default']
+      log = Log4r::Logger['default']
       actions.each do |action|
         hash = action.execute
         unless hash.nil?
@@ -109,13 +110,13 @@ module CheckTaskr
 
     # set log level
     def log_level(level)
-      log = Logger['default']
+      log = Log4r::Logger['default']
       log.level = level
     end
 
     # process hosts from options
     def process_hosts(options)
-      log = Logger['default']
+      log = Log4r::Logger['default']
       hosts = options.delete(:hosts)
       if block_given?
         if hosts.nil?

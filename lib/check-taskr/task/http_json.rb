@@ -35,7 +35,7 @@ module CheckTaskr
     end
 
     def execute
-      log = Logger['default']
+      log = Log4r::Logger['default']
       hash = {:stat => 0, :ip => @ip, :msg => "OK", :error_id => @error_code }
       begin
         Net::HTTP.start(@ip, @port) do |http|

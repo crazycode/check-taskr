@@ -35,7 +35,7 @@ module CheckTaskr
     end
 
     def execute
-      log = Logger['default']
+      log = Log4r::Logger['default']
       log.debug "action: ip=#{@ip}, port=#{@port}, name=#{@name}"
       hash = { :stat => 0, :ip => @ip, :msg => "OK", :timestamp => Time.now.to_i, :error_id => @error_code }
       begin
