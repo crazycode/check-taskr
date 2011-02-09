@@ -17,7 +17,7 @@ filename = "jobs"
 logdir = "./logs"
 if ARGV.size > 0
   filename = ARGV[0]
-  logdir = File.dirname(File.realdirpath(filename)) + "/logs"
+  logdir = File.dirname(filename) + "/logs"
 end
 
 log = Log4r::Logger.new('default')

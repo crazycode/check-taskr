@@ -20,6 +20,11 @@ module CheckTaskr
       config.results.to_json
     end
 
+    get '/stats' do
+      config = CheckTaskr::JobsConfiguration.instance
+      config.results.to_json
+    end
+
     get '/lock' do
       config = CheckTaskr::JobsConfiguration.instance
       config.lock
@@ -29,6 +34,10 @@ module CheckTaskr
     get '/unlock' do
       config = CheckTaskr::JobsConfiguration.instance
       config.unlock
+      redirect '/check.html'
+    end
+
+    get '/stats.html' do
       redirect '/check.html'
     end
 
